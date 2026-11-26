@@ -4,6 +4,7 @@ pipeline {
     environment {
         VIRTUAL_ENV = 'venv'
         PYTHONIOENCODING = 'utf-8'
+        DEPLOY_DIR = 'C:\\deployments\\jenkins_project'
     }
 
     stages {
@@ -20,7 +21,7 @@ pipeline {
         stage('Lint') {
             steps {
                 script {
-                    bat "${VIRTUAL_ENV}\\Scripts\\activate && flake8 app.py"
+                    bat "${VIRTUAL_ENV}\\Scripts\\activate && flake8 app.py deploy.py"
                 }
             }
         }
@@ -46,8 +47,8 @@ pipeline {
         stage('Security Scan') {
             steps {
                 script {
-                    bat "${VIRTUAL_ENV}\\Scripts\\activate && bandit -r app.py tests -f html -o bandit-report.html --exit-zero"
-                    bat "${VIRTUAL_ENV}\\Scripts\\activate && bandit -r app.py tests"
+                    bat "${VIRTUAL_ENV}\\Scripts\\activate && bandit -r app.py deploy.py tests -f html -o bandit-report.html --exit-zero"
+                    bat "${VIRTUAL_ENV}\\Scripts\\activate && bandit -r app.py deploy.py tests"
                 }
             }
             post {
@@ -59,8 +60,7 @@ pipeline {
         stage('Deploy') {
             steps {
                 script {
-                    // Deployment logic, e.g., pushing to a remote server
-                    echo "Deploying application..."
+                    bat "${VIRTUAL_ENV}\\Scripts\\activate && python deploy.py"
                 }
             }
         }
