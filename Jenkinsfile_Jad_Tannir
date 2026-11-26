@@ -3,7 +3,6 @@ pipeline {
 
     environment {
         VIRTUAL_ENV = 'venv'
-        PYTHON = 'C:\\Users\\Victus\\AppData\\Local\\Programs\\Python\\Python312\\python.exe'
     }
 
     stages {
@@ -11,29 +10,30 @@ pipeline {
             steps {
                 script {
                     if (!fileExists("${env.WORKSPACE}/${VIRTUAL_ENV}")) {
-                        bat "\"%PYTHON%\" -m venv %VIRTUAL_ENV%"
+                        bat "\"C:\\Program Files\\Python38\\python.exe\" -m venv ${VIRTUAL_ENV}"
                     }
-                    bat "%VIRTUAL_ENV%\\Scripts\\python -m pip install -r requirements.txt"
+                    bat "${VIRTUAL_ENV}\\Scripts\\activate && pip install -r requirements.txt"
                 }
             }
         }
         stage('Lint') {
             steps {
                 script {
-                    bat "%VIRTUAL_ENV%\\Scripts\\python -m flake8 app.py"
+                    bat "${VIRTUAL_ENV}\\Scripts\\activate && flake8 app.py"
                 }
             }
         }
         stage('Test') {
             steps {
                 script {
-                    bat "%VIRTUAL_ENV%\\Scripts\\python -m pytest"
+                    bat "${VIRTUAL_ENV}\\Scripts\\activate && pytest"
                 }
             }
         }
         stage('Deploy') {
             steps {
                 script {
+                    // Deployment logic, e.g., pushing to a remote server
                     echo "Deploying application..."
                 }
             }
