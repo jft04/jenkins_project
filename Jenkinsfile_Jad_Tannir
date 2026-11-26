@@ -42,6 +42,19 @@ pipeline {
                 }
             }
         }
+        stage('Security Scan') {
+            steps {
+                script {
+                    bat "${VIRTUAL_ENV}\\Scripts\\activate && bandit -r . -x venv -f html -o bandit-report.html --exit-zero"
+                    bat "${VIRTUAL_ENV}\\Scripts\\activate && bandit -r . -x venv"
+                }
+            }
+            post {
+                always {
+                    archiveArtifacts artifacts: 'bandit-report.html', allowEmptyArchive: true
+                }
+            }
+        }
         stage('Deploy') {
             steps {
                 script {
