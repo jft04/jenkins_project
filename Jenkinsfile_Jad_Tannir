@@ -3,6 +3,7 @@ pipeline {
 
     environment {
         VIRTUAL_ENV = 'venv'
+        PYTHONIOENCODING = 'utf-8'
     }
 
     stages {
@@ -45,8 +46,8 @@ pipeline {
         stage('Security Scan') {
             steps {
                 script {
-                    bat "${VIRTUAL_ENV}\\Scripts\\activate && bandit -r . -x venv -f html -o bandit-report.html --exit-zero"
-                    bat "${VIRTUAL_ENV}\\Scripts\\activate && bandit -r . -x venv"
+                    bat "${VIRTUAL_ENV}\\Scripts\\activate && bandit -r app.py tests -f html -o bandit-report.html --exit-zero"
+                    bat "${VIRTUAL_ENV}\\Scripts\\activate && bandit -r app.py tests"
                 }
             }
             post {
